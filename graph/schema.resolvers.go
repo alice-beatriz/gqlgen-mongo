@@ -33,7 +33,7 @@ func (r *queryResolver) Car(ctx context.Context, id string) (*model.Car, error) 
 
 // Persons is the resolver for the persons field.
 func (r *queryResolver) Persons(ctx context.Context) ([]*model.Person, error) {
-	panic(fmt.Errorf("not implemented: Persons - persons"))
+	return nil, nil
 }
 
 // Person is the resolver for the person field.
@@ -49,16 +49,3 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
-}
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
-}
