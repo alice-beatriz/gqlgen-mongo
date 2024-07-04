@@ -2,25 +2,30 @@
 
 package model
 
+type Car struct {
+	ID    string  `json:"id"`
+	Model string  `json:"model"`
+	Owner *Person `json:"owner"`
+}
+
+type CarInput struct {
+	Model string `json:"model"`
+	Owner string `json:"owner"`
+}
+
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Person struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
+
+type PersonInput struct {
+	Name    string `json:"name"`
+	Address string `json:"address"`
 }
 
 type Query struct {
-}
-
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
-}
-
-type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
 }

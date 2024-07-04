@@ -11,14 +11,34 @@ import (
 	"github.com/alice-beatriz/gqlgen-mongo/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// AddCar is the resolver for the addCar field.
+func (r *mutationResolver) AddCar(ctx context.Context, input model.CarInput) (*model.Car, error) {
+	panic(fmt.Errorf("not implemented: AddCar - addCar"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// CreatePerson is the resolver for the createPerson field.
+func (r *mutationResolver) CreatePerson(ctx context.Context, input model.PersonInput) (*model.Person, error) {
+	panic(fmt.Errorf("not implemented: CreatePerson - createPerson"))
+}
+
+// Cars is the resolver for the cars field.
+func (r *queryResolver) Cars(ctx context.Context) ([]*model.Car, error) {
+	panic(fmt.Errorf("not implemented: Cars - cars"))
+}
+
+// Car is the resolver for the car field.
+func (r *queryResolver) Car(ctx context.Context, id string) (*model.Car, error) {
+	panic(fmt.Errorf("not implemented: Car - car"))
+}
+
+// Persons is the resolver for the persons field.
+func (r *queryResolver) Persons(ctx context.Context) ([]*model.Person, error) {
+	panic(fmt.Errorf("not implemented: Persons - persons"))
+}
+
+// Person is the resolver for the person field.
+func (r *queryResolver) Person(ctx context.Context, id string) (*model.Person, error) {
+	panic(fmt.Errorf("not implemented: Person - person"))
 }
 
 // Mutation returns MutationResolver implementation.
@@ -29,3 +49,16 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+}
+func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: Todos - todos"))
+}
