@@ -9,36 +9,37 @@ import (
 	"fmt"
 
 	"github.com/alice-beatriz/gqlgen-mongo/graph/model"
+	"github.com/alice-beatriz/gqlgen-mongo/repository"
 )
 
-// AddCar is the resolver for the addCar field.
-func (r *mutationResolver) AddCar(ctx context.Context, input model.CarInput) (*model.Car, error) {
-	panic(fmt.Errorf("not implemented: AddCar - addCar"))
+// CreateCar is the resolver for the createCar field.
+func (r *mutationResolver) CreateCar(ctx context.Context, input model.CarInput) (string, error) {
+	panic(fmt.Errorf("not implemented: CreateCar - createCar"))
 }
 
 // CreatePerson is the resolver for the createPerson field.
-func (r *mutationResolver) CreatePerson(ctx context.Context, input model.PersonInput) (*model.Person, error) {
+func (r *mutationResolver) CreatePerson(ctx context.Context, input model.PersonInput) (string, error) {
 	panic(fmt.Errorf("not implemented: CreatePerson - createPerson"))
 }
 
 // Cars is the resolver for the cars field.
 func (r *queryResolver) Cars(ctx context.Context) ([]*model.Car, error) {
-	panic(fmt.Errorf("not implemented: Cars - cars"))
+	return repository.GetCars(ctx)
 }
 
 // Car is the resolver for the car field.
 func (r *queryResolver) Car(ctx context.Context, id string) (*model.Car, error) {
-	panic(fmt.Errorf("not implemented: Car - car"))
+	return repository.GetCar(ctx, id)
 }
 
 // Persons is the resolver for the persons field.
 func (r *queryResolver) Persons(ctx context.Context) ([]*model.Person, error) {
-	return nil, nil
+	return repository.GetPersons(ctx)
 }
 
 // Person is the resolver for the person field.
 func (r *queryResolver) Person(ctx context.Context, id string) (*model.Person, error) {
-	panic(fmt.Errorf("not implemented: Person - person"))
+	return repository.GetPerson(ctx, id)
 }
 
 // Mutation returns MutationResolver implementation.

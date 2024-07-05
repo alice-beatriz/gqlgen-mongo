@@ -9,26 +9,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func personRepository(ctx context.Context) *mongo.Collection {
+func carsRepository(ctx context.Context) *mongo.Collection {
 	return db.Template(ctx, "persons")
 }
 
-func GetPersons(ctx context.Context) ([]*model.Person, error) {
-	cursor, err := personRepository(ctx).Find(ctx, bson.D{{}})
+func GetCars(ctx context.Context) ([]*model.Car, error) {
+	cursor, err := carsRepository(ctx).Find(ctx, bson.D{{}})
 	if err != nil {
 		panic(err)
 	}
-	var res []*model.Person
+	var res []*model.Car
 	if err = cursor.All(ctx, &res); err != nil {
 		panic(err)
 	}
 	return res, nil
 }
 
-func GetPerson(ctx context.Context, id string) (*model.Person, error) {
-	var res *model.Person
+func GetCar(ctx context.Context, id string) (*model.Car, error) {
+	var res *model.Car
 
-	err := personRepository(ctx).FindOne(ctx, bson.M{"_id": convertId(id)}).Decode(&res)
+	err := carsRepository(ctx).FindOne(ctx, bson.M{"_id": convertId(id)}).Decode(&res)
 	if err != nil {
 		panic(err)
 	}

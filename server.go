@@ -8,6 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/alice-beatriz/gqlgen-mongo/config"
+	"github.com/alice-beatriz/gqlgen-mongo/db"
 	"github.com/alice-beatriz/gqlgen-mongo/graph"
 )
 
@@ -18,6 +19,9 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+
+	db.Init()
+	defer db.Disconnect()
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

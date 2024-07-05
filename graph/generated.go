@@ -54,7 +54,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddCar       func(childComplexity int, input model.CarInput) int
+		CreateCar    func(childComplexity int, input model.CarInput) int
 		CreatePerson func(childComplexity int, input model.PersonInput) int
 	}
 
@@ -73,8 +73,8 @@ type ComplexityRoot struct {
 }
 
 type MutationResolver interface {
-	AddCar(ctx context.Context, input model.CarInput) (*model.Car, error)
-	CreatePerson(ctx context.Context, input model.PersonInput) (*model.Person, error)
+	CreateCar(ctx context.Context, input model.CarInput) (string, error)
+	CreatePerson(ctx context.Context, input model.PersonInput) (string, error)
 }
 type QueryResolver interface {
 	Cars(ctx context.Context) ([]*model.Car, error)
@@ -123,17 +123,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Car.Owner(childComplexity), true
 
-	case "Mutation.addCar":
-		if e.complexity.Mutation.AddCar == nil {
+	case "Mutation.createCar":
+		if e.complexity.Mutation.CreateCar == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_addCar_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_createCar_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.AddCar(childComplexity, args["input"].(model.CarInput)), true
+		return e.complexity.Mutation.CreateCar(childComplexity, args["input"].(model.CarInput)), true
 
 	case "Mutation.createPerson":
 		if e.complexity.Mutation.CreatePerson == nil {
@@ -332,7 +332,7 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_addCar_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_createCar_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 model.CarInput
@@ -585,8 +585,8 @@ func (ec *executionContext) fieldContext_Car_owner(_ context.Context, field grap
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_addCar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_addCar(ctx, field)
+func (ec *executionContext) _Mutation_createCar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createCar(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -599,7 +599,7 @@ func (ec *executionContext) _Mutation_addCar(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().AddCar(rctx, fc.Args["input"].(model.CarInput))
+		return ec.resolvers.Mutation().CreateCar(rctx, fc.Args["input"].(model.CarInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -611,27 +611,19 @@ func (ec *executionContext) _Mutation_addCar(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Car)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNCar2ᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCar(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_addCar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_createCar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Car_id(ctx, field)
-			case "model":
-				return ec.fieldContext_Car_model(ctx, field)
-			case "owner":
-				return ec.fieldContext_Car_owner(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Car", field.Name)
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	defer func() {
@@ -641,7 +633,7 @@ func (ec *executionContext) fieldContext_Mutation_addCar(ctx context.Context, fi
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_addCar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_createCar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -674,9 +666,9 @@ func (ec *executionContext) _Mutation_createPerson(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Person)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNPerson2ᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPerson(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPerson(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -686,15 +678,7 @@ func (ec *executionContext) fieldContext_Mutation_createPerson(ctx context.Conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Person_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Person_name(ctx, field)
-			case "address":
-				return ec.fieldContext_Person_address(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Person", field.Name)
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	defer func() {
@@ -3113,9 +3097,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "addCar":
+		case "createCar":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_addCar(ctx, field)
+				return ec._Mutation_createCar(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -3672,10 +3656,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNCar2githubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCar(ctx context.Context, sel ast.SelectionSet, v model.Car) graphql.Marshaler {
-	return ec._Car(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNCar2ᚕᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Car) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -3748,10 +3728,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) marshalNPerson2githubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPerson(ctx context.Context, sel ast.SelectionSet, v model.Person) graphql.Marshaler {
-	return ec._Person(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNPerson2ᚕᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPersonᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Person) graphql.Marshaler {
