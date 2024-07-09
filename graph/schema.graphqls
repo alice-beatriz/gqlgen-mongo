@@ -6,8 +6,8 @@ type Query {
 }
 
 type Mutation {
-  createCar(input: CarInput!): ID!
-  createPerson(input: PersonInput!): ID!
+  createCar(input: CarInput!): Car!
+  createPerson(input: PersonInput!): Person!
 }
 
 type Car {

@@ -2,24 +2,16 @@
 
 package model
 
-type Car struct {
-	ID    string  `json:"id"`
-	Model string  `json:"model"`
-	Owner *Person `json:"owner"`
-}
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 type CarInput struct {
-	Model string `json:"model"`
-	Owner string `json:"owner"`
+	Model string             `json:"model"`
+	Owner primitive.ObjectID `json:"owner"`
 }
 
 type Mutation struct {
-}
-
-type Person struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Address string `json:"address"`
 }
 
 type PersonInput struct {

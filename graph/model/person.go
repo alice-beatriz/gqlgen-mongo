@@ -1,34 +1,40 @@
-package repository
+package model
 
 import (
 	"context"
 
 	"github.com/alice-beatriz/gqlgen-mongo/db"
-	"github.com/alice-beatriz/gqlgen-mongo/graph/model"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
+
+type Person struct {
+	ID      primitive.ObjectID `json:"id" bson:"_id"`
+	Name    string             `json:"name"`
+	Address string             `json:"address"`
+}
 
 func personRepository(ctx context.Context) *mongo.Collection {
 	return db.Template(ctx, "persons")
 }
 
-func GetPersons(ctx context.Context) ([]*model.Person, error) {
+func GetPersons(ctx context.Context) ([]*Person, error) {
 	cursor, err := personRepository(ctx).Find(ctx, bson.D{{}})
 	if err != nil {
 		panic(err)
 	}
-	var res []*model.Person
+	var res []*Person
 	if err = cursor.All(ctx, &res); err != nil {
 		panic(err)
 	}
 	return res, nil
 }
 
-func GetPerson(ctx context.Context, id string) (*model.Person, error) {
-	var res *model.Person
+func GetPerson(ctx context.Context, id primitive.ObjectID) (*Person, error) {
+	var res *Person
 
-	err := personRepository(ctx).FindOne(ctx, bson.M{"_id": convertId(id)}).Decode(&res)
+	err := personRepository(ctx).FindOne(ctx, bson.M{"_id": id}).Decode(&res)
 	if err != nil {
 		panic(err)
 	}

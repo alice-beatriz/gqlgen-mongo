@@ -15,8 +15,10 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/alice-beatriz/gqlgen-mongo/graph/model"
+	"github.com/alice-beatriz/gqlgen-mongo/marshallers"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -65,22 +67,22 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Car     func(childComplexity int, id string) int
+		Car     func(childComplexity int, id primitive.ObjectID) int
 		Cars    func(childComplexity int) int
-		Person  func(childComplexity int, id string) int
+		Person  func(childComplexity int, id primitive.ObjectID) int
 		Persons func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
-	CreateCar(ctx context.Context, input model.CarInput) (string, error)
-	CreatePerson(ctx context.Context, input model.PersonInput) (string, error)
+	CreateCar(ctx context.Context, input model.CarInput) (*model.Car, error)
+	CreatePerson(ctx context.Context, input model.PersonInput) (*model.Person, error)
 }
 type QueryResolver interface {
 	Cars(ctx context.Context) ([]*model.Car, error)
-	Car(ctx context.Context, id string) (*model.Car, error)
+	Car(ctx context.Context, id primitive.ObjectID) (*model.Car, error)
 	Persons(ctx context.Context) ([]*model.Person, error)
-	Person(ctx context.Context, id string) (*model.Person, error)
+	Person(ctx context.Context, id primitive.ObjectID) (*model.Person, error)
 }
 
 type executableSchema struct {
@@ -178,7 +180,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Car(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Car(childComplexity, args["id"].(primitive.ObjectID)), true
 
 	case "Query.cars":
 		if e.complexity.Query.Cars == nil {
@@ -197,7 +199,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Person(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.Person(childComplexity, args["id"].(primitive.ObjectID)), true
 
 	case "Query.persons":
 		if e.complexity.Query.Persons == nil {
@@ -380,10 +382,10 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_car_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 primitive.ObjectID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -395,10 +397,10 @@ func (ec *executionContext) field_Query_car_args(ctx context.Context, rawArgs ma
 func (ec *executionContext) field_Query_person_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
+	var arg0 primitive.ObjectID
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -471,9 +473,9 @@ func (ec *executionContext) _Car_id(ctx context.Context, field graphql.Collected
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(primitive.ObjectID)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Car_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -547,7 +549,7 @@ func (ec *executionContext) _Car_owner(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Owner, nil
+		return obj.Owner(ctx), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -568,7 +570,7 @@ func (ec *executionContext) fieldContext_Car_owner(_ context.Context, field grap
 	fc = &graphql.FieldContext{
 		Object:     "Car",
 		Field:      field,
-		IsMethod:   false,
+		IsMethod:   true,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
@@ -611,9 +613,9 @@ func (ec *executionContext) _Mutation_createCar(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Car)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNCar2ᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCar(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createCar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -623,7 +625,15 @@ func (ec *executionContext) fieldContext_Mutation_createCar(ctx context.Context,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Car_id(ctx, field)
+			case "model":
+				return ec.fieldContext_Car_model(ctx, field)
+			case "owner":
+				return ec.fieldContext_Car_owner(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Car", field.Name)
 		},
 	}
 	defer func() {
@@ -666,9 +676,9 @@ func (ec *executionContext) _Mutation_createPerson(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*model.Person)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNPerson2ᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPerson(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createPerson(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -678,7 +688,15 @@ func (ec *executionContext) fieldContext_Mutation_createPerson(ctx context.Conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Person_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Person_name(ctx, field)
+			case "address":
+				return ec.fieldContext_Person_address(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Person", field.Name)
 		},
 	}
 	defer func() {
@@ -721,9 +739,9 @@ func (ec *executionContext) _Person_id(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(primitive.ObjectID)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Person_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -893,7 +911,7 @@ func (ec *executionContext) _Query_car(ctx context.Context, field graphql.Collec
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Car(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Car(rctx, fc.Args["id"].(primitive.ObjectID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1005,7 +1023,7 @@ func (ec *executionContext) _Query_person(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Person(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().Person(rctx, fc.Args["id"].(primitive.ObjectID))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2976,7 +2994,7 @@ func (ec *executionContext) unmarshalInputCarInput(ctx context.Context, obj inte
 			it.Model = data
 		case "owner":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("owner"))
-			data, err := ec.unmarshalNID2string(ctx, v)
+			data, err := ec.unmarshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3043,18 +3061,49 @@ func (ec *executionContext) _Car(ctx context.Context, sel ast.SelectionSet, obj 
 		case "id":
 			out.Values[i] = ec._Car_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "model":
 			out.Values[i] = ec._Car_model(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "owner":
-			out.Values[i] = ec._Car_owner(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Car_owner(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3656,6 +3705,10 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNCar2githubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCar(ctx context.Context, sel ast.SelectionSet, v model.Car) graphql.Marshaler {
+	return ec._Car(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNCar2ᚕᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐCarᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Car) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -3715,19 +3768,23 @@ func (ec *executionContext) unmarshalNCarInput2githubᚗcomᚋaliceᚑbeatrizᚋ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
-	res, err := graphql.UnmarshalID(v)
+func (ec *executionContext) unmarshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx context.Context, v interface{}) (primitive.ObjectID, error) {
+	res, err := marshallers.UnmarshalObjectId(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalID(v)
+func (ec *executionContext) marshalNID2goᚗmongodbᚗorgᚋmongoᚑdriverᚋbsonᚋprimitiveᚐObjectID(ctx context.Context, sel ast.SelectionSet, v primitive.ObjectID) graphql.Marshaler {
+	res := marshallers.MarshalObjectId(v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNPerson2githubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPerson(ctx context.Context, sel ast.SelectionSet, v model.Person) graphql.Marshaler {
+	return ec._Person(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNPerson2ᚕᚖgithubᚗcomᚋaliceᚑbeatrizᚋgqlgenᚑmongoᚋgraphᚋmodelᚐPersonᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Person) graphql.Marshaler {
