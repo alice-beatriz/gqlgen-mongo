@@ -51,6 +51,7 @@ func GetCar(ctx context.Context, id primitive.ObjectID) (*Car, error) {
 
 func CreateCar(ctx context.Context, car CarInput) (*Car, error) {
 	var model = Car{
+		ID:      primitive.NewObjectID(),
 		Model:   car.Model,
 		OwnerID: car.Owner,
 	}
@@ -59,7 +60,6 @@ func CreateCar(ctx context.Context, car CarInput) (*Car, error) {
 	if err != nil {
 		panic(err)
 	}
-
 	model.ID = res.InsertedID.(primitive.ObjectID)
 
 	return &model, nil

@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/alice-beatriz/gqlgen-mongo/graph/model"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -14,12 +13,12 @@ import (
 
 // CreateCar is the resolver for the createCar field.
 func (r *mutationResolver) CreateCar(ctx context.Context, input model.CarInput) (*model.Car, error) {
-	panic(fmt.Errorf("not implemented: CreateCar - createCar"))
+	return model.CreateCar(ctx, input)
 }
 
 // CreatePerson is the resolver for the createPerson field.
 func (r *mutationResolver) CreatePerson(ctx context.Context, input model.PersonInput) (*model.Person, error) {
-	panic(fmt.Errorf("not implemented: CreatePerson - createPerson"))
+	return model.CreatePerson(ctx, input)
 }
 
 // Cars is the resolver for the cars field.

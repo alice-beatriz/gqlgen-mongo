@@ -40,3 +40,19 @@ func GetPerson(ctx context.Context, id primitive.ObjectID) (*Person, error) {
 	}
 	return res, nil
 }
+
+func CreatePerson(ctx context.Context, person PersonInput) (*Person, error) {
+	var model = Person{
+		ID:      primitive.NewObjectID(),
+		Name:    person.Name,
+		Address: person.Address,
+	}
+
+	res, err := personRepository(ctx).InsertOne(ctx, model)
+	if err != nil {
+		panic(err)
+	}
+	model.ID = res.InsertedID.(primitive.ObjectID)
+
+	return &model, nil
+}

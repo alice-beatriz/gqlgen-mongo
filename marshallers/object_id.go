@@ -18,7 +18,10 @@ func MarshalObjectId(id primitive.ObjectID) graphql.Marshaler {
 }
 
 func UnmarshalObjectId(v interface{}) (primitive.ObjectID, error) {
-	var id primitive.ObjectID
-	err := id.UnmarshalJSON([]byte(v.(string)))
-	return id, err
+	switch v := v.(type) {
+	case string:
+		return primitive.ObjectIDFromHex(v)
+	default:
+		panic("Value isn't an ObjectId")
+	}
 }
